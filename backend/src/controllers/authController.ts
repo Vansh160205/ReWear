@@ -7,18 +7,17 @@ const JWT_SECRET = process.env.JWT_SECRET || "super-secret";
 
 export const loginUser = async (req: Request, res: Response) => {
   const { email, password } = req.body;
-
+    console.log("Login attempt with email:", email,password);
   try {
     const user = await prisma.user.findUnique({ where: { email } });
 
     if (!user) {
-      return res.status(400).json({ error: "Invalid email or password" });
+      return res.status(400).json({ error: "User do not exist" });
     }
-
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
-      return res.status(400).json({ error: "Invalid email or password" });
+      return res.status(400).json({ error: "Invalid password" });
     }
 
     const token = jwt.sign(
@@ -26,7 +25,12 @@ export const loginUser = async (req: Request, res: Response) => {
       JWT_SECRET,
       { expiresIn: "6h" }
     );
-
+res.cookie('token', token, {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: 'lax',
+  maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+});
     return res.json({ token });
   } catch (error) {
     return res.status(500).json({ error: "Login failed" });

@@ -14,38 +14,63 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  password  String
-  name      String
-  points    Int      @default(0)
-  items     Item[]   @relation("UserItems")
-  swaps     Swap[]   @relation("UserSwaps")
-  createdAt DateTime @default(now())
+  id            Int         @id @default(autoincrement())
+  email         String      @unique
+  password      String
+  name          String
+  isAdmin       Boolean     @default(false)
+  points        Int         @default(0)
+  items         Item[]      @relation("UserItems")
+  swaps         Swap[]      @relation("UserSwaps")      // 2-way swaps initiated
+  incomingSwaps Swap[]      @relation("IncomingSwaps")  // swaps received
+  redemptions   Redemption[] // redemptions (used points)
+  createdAt     DateTime    @default(now())
+}
+model Swap {
+  id            Int      @id @default(autoincrement())
+  itemId        Int
+  requesterId   Int
+  ownerId       Int
+  offeredItemId Int?     // Optional item offered in exchange
+  status        String   @default("pending") // pending, approved, rejected, completed
+  createdAt     DateTime @default(now())
+
+  item          Item     @relation("ItemSwaps", fields: [itemId], references: [id])
+  requester     User     @relation("UserSwaps", fields: [requesterId], references: [id])
+  owner         User     @relation("IncomingSwaps", fields: [ownerId], references: [id])
+  offeredItem   Item?    @relation("OfferedItemSwaps", fields: [offeredItemId], references: [id])
 }
 
 model Item {
-  id          Int      @id @default(autoincrement())
-  title       String
-  description String
-  category    String
-  size        String
-  condition   String
-  tags        String[]
-  images      String[] // store URLs or file paths
-  ownerId     Int
-  owner       User     @relation("UserItems", fields: [ownerId], references: [id])
-  swaps       Swap[]   @relation("ItemSwaps")
-  available   Boolean  @default(true)
-  createdAt   DateTime @default(now())
+  id            Int      @id @default(autoincrement())
+  title         String
+  description   String
+  category      String
+  size          String
+  condition     String
+  status        String   @default("available") // available, pending, sold, redeemed
+  tags          String[]
+  images        String[]
+  approved      Boolean  @default(false) // Admin approval required
+  ownerId       Int
+  owner         User     @relation("UserItems", fields: [ownerId], references: [id])
+  swaps         Swap[]   @relation("ItemSwaps")
+  offeredInSwaps Swap[]  @relation("OfferedItemSwaps") // ✅ inverse of offeredItem
+  available     Boolean  @default(true)
+  isRedeemable  Boolean  @default(false)
+  pointsCost    Int?
+  createdAt     DateTime @default(now())
+  redemptions Redemption[] // inverse relation
 }
 
-model Swap {
-  id          Int      @id @default(autoincrement())
-  itemId      Int
-  item        Item     @relation("ItemSwaps",fields: [itemId], references: [id])
-  requesterId Int
-  requester   User     @relation("UserSwaps", fields: [requesterId], references: [id])
-  status      String   @default("pending") // pending, approved, rejected, completed
-  createdAt   DateTime @default(now())
+
+model Redemption {
+  id        Int      @id @default(autoincrement())
+  itemId    Int
+  userId    Int
+  pointsUsed Int
+  createdAt DateTime @default(now())
+
+  item   Item @relation(fields: [itemId], references: [id])
+  user   User @relation(fields: [userId], references: [id])
 }
