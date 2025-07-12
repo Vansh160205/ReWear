@@ -77,21 +77,34 @@
 ---
 
 ## 📁 Folder Structure Highlights
+```plaintext
 /frontend
-/app
-/dashboard → user dashboard (listings, swaps, requests)
-/items → list, view, add items
-/admin → admin panel
-/components → reusable UI elements
+  ├── app/
+  │   ├── dashboard/         → User dashboard: listings, swaps, requests
+  │   ├── items/             → List, view, and add items
+  │   ├── admin/             → Admin panel for moderation and points
+  │   └── page.tsx           → Landing page
+  ├── components/            → Reusable UI components (buttons, forms, tabs)
+  ├── lib/                   → API utilities and helpers
+  └── styles/                → Tailwind and global styles
 
 /backend
-/routes → Express routes (auth, items, swaps, admin)
-/controllers → Business logic for each route
-/lib/prisma.ts → Prisma client setup
-/middleware/auth.ts → JWT middleware
+  ├── routes/
+  │   ├── auth.ts            → Login, register routes
+  │   ├── items.ts           → Add/list/fetch item routes
+  │   ├── swaps.ts           → Swap request and response routes
+  │   └── admin.ts           → Admin routes: users, points, moderation
+  ├── controllers/           → Business logic for each route
+  ├── middleware/
+  │   └── auth.ts            → JWT auth middleware
+  ├── lib/
+  │   └── prisma.ts          → Prisma client setup
+  ├── uploads/               → Directory for uploaded item images
+  ├── prisma/
+  │   └── schema.prisma      → Database schema
+  └── server.ts              → Express server setup and entry point
 
-
----
+```
 
 ## 🧪 Setup Instructions
 
