@@ -1,0 +1,185 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
+import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+  SelectValue,
+} from '@/components/ui/select';
+import Link from 'next/link';
+
+interface Item {
+  id: number;
+  title: string;
+  description: string;
+  category: string;
+  size: string;
+  condition: string;
+  available: boolean;
+  tags: string[];
+  images: string[];
+  isRedeemable: boolean;
+  pointsCost?: number;
+}
+
+export default function ItemDetailPage() {
+  const { id } = useParams();
+  const router = useRouter();
+
+  const [item, setItem] = useState<Item | null>(null);
+  const [myItems, setMyItems] = useState<Item[]>([]);
+  const [offeredItemId, setOfferedItemId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [mode, setMode] = useState<'swap' | 'redeem'>('swap');
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const token = sessionStorage.getItem('token');
+      if (!token) {
+        toast.error('User token not found');
+        return;
+      }
+
+      try {
+        const headers = {
+          Authorization: `Bearer ${token}`,
+        };
+
+        const [itemRes, myItemsRes] = await Promise.all([
+          fetch(`http://localhost:8000/api/items/${id}`, { headers }),
+          fetch(`http://localhost:8000/api/items/user`, { headers }),
+        ]);
+
+        const [itemData, myItemsData] = await Promise.all([
+          itemRes.json(),
+          myItemsRes.json(),
+        ]);
+
+        setItem(itemData);
+        setMyItems(myItemsData.filter((i: Item) => i.available && i.id !== Number(id)));
+      } catch (err) {
+        console.error('Error fetching item or user items:', err);
+        toast.error('Failed to fetch item details');
+      }
+    };
+
+    fetchData();
+  }, [id]);
+
+  const handleSwapRequest = async () => {
+    const token = sessionStorage.getItem('token');
+    if (!token) {
+      toast.error('User token not found');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const res = await fetch('http://localhost:8000/api/swaps', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          itemId: Number(id),
+          offeredItemId: mode === 'swap' ? Number(offeredItemId) : null,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        toast.success('Swap request sent!');
+        router.push('/dashboard');
+      } else {
+        toast.error(data.error || 'Failed to send request');
+      }
+    } catch (err) {
+      console.error('Error sending swap request:', err);
+      toast.error('Something went wrong.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (!item) return <p>Loading...</p>;
+
+  return (
+    <main className="p-8 max-w-2xl mx-auto bg-muted rounded-xl shadow-md">
+      <Button asChild variant="secondary" className="mb-4">
+            <Link href="/items">← Back to items</Link>
+        </Button>
+      <h1 className="text-2xl font-bold mb-2">{item.title}</h1>
+      <p className="text-muted-foreground mb-4">{item.description}</p>
+
+      <ul className="mb-4 space-y-1 text-sm">
+        <li><strong>Category:</strong> {item.category}</li>
+        <li><strong>Size:</strong> {item.size}</li>
+        <li><strong>Condition:</strong> {item.condition}</li>
+        <li><strong>Tags:</strong> {item.tags.join(', ')}</li>
+        {item.isRedeemable && (
+          <li><strong>Points Cost:</strong> {item.pointsCost}</li>
+        )}
+      </ul>
+
+      {item.images.length > 0 && (
+        <div className="grid grid-cols-2 gap-4 mb-6">
+          {item.images.map((url, index) => (
+            <img
+              key={index}
+              src={`http://localhost:8000${url}`}
+              alt={`Item ${index}`}
+              className="rounded-lg shadow-sm"
+            />
+          ))}
+        </div>
+      )}
+
+      {/* Mode Selection */}
+      <div className="mb-4 flex gap-4">
+        <Button variant={mode === 'swap' ? 'default' : 'outline'} onClick={() => setMode('swap')}>
+          Swap with Item
+        </Button>
+        {item.isRedeemable && (
+          <Button variant={mode === 'redeem' ? 'default' : 'outline'} onClick={() => setMode('redeem')}>
+            Redeem via Points
+          </Button>
+        )}
+      </div>
+
+      {/* Swap with another item */}
+      {mode === 'swap' && (
+        <div className="mb-6">
+          <Label className="mb-2 block">Choose an item to offer</Label>
+          <Select onValueChange={(value) => setOfferedItemId(value)}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select your item" />
+            </SelectTrigger>
+            <SelectContent>
+              {myItems.map((myItem) => (
+                <SelectItem key={myItem.id} value={String(myItem.id)}>
+                  {myItem.title}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      )}
+
+      <Button
+        onClick={handleSwapRequest}
+        disabled={loading || (mode === 'swap' && !offeredItemId)}
+        className="w-full"
+      >
+        {loading ? 'Requesting...' : 'Send Swap Request'}
+      </Button>
+    </main>
+  );
+}
