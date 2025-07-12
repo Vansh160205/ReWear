@@ -25,13 +25,9 @@ export const loginUser = async (req: Request, res: Response) => {
       JWT_SECRET,
       { expiresIn: "6h" }
     );
-res.cookie('token', token, {
-  httpOnly: true,
-  secure: process.env.NODE_ENV === 'production',
-  sameSite: 'lax',
-  maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-});
-    return res.json({ token });
+    const isAdmin = user.isAdmin;
+    console.log("User logged in successfully:", user.id, user.email, isAdmin);
+    return res.json({ token,isAdmin });
   } catch (error) {
     return res.status(500).json({ error: "Login failed" });
   }

@@ -31,7 +31,7 @@ export default function AdminPanel() {
                 method: 'GET',
                 headers: {
                 'Content-Type': 'application/json',
-                'token': sessionStorage.getItem('token') || '',
+                'Authorization': `Bearer ${sessionStorage.getItem('token')}` || '',
                 },
                 credentials: 'include',
             }
@@ -54,7 +54,7 @@ export default function AdminPanel() {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/json',
-                'token': sessionStorage.getItem('token') || '',
+                'Authorization': `Bearer ${sessionStorage.getItem('token')}` || '',
                 },
                 credentials: 'include',
                 body: JSON.stringify({

@@ -26,8 +26,10 @@ export default function LoginPage() {
       });
 
       if (res.ok) {
-        sessionStorage.setItem('token', (await res.json()).token);
-        console.log(localStorage.getItem('token'));
+        const data = await res.json();
+        sessionStorage.setItem('token', data.token);
+        sessionStorage.setItem('isAdmin', data.isAdmin);
+        
         toast.success('Login successful!');
         router.push('/');
       } else {

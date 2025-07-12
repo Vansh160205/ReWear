@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 export default function HomePage() {
 const router = useRouter();
   const [hasToken, setHasToken] = useState(false);
-
+  const isAdmin = sessionStorage.getItem('isAdmin') === 'true';
   useEffect(() => {
     const token = sessionStorage.getItem('token');
     setHasToken(!!token);
@@ -46,6 +46,11 @@ const router = useRouter();
        <div className="absolute top-4 right-6">
         {hasToken ? (
           <div className="flex gap-3">
+            {isAdmin && (
+              <Button asChild variant="secondary">
+                <Link href="/admin">Admin Dashboard</Link>
+              </Button>
+            )}
             <Button onClick={() => router.push('/dashboard')} variant="outline">
               Dashboard
             </Button>

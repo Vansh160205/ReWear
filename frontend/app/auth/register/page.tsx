@@ -26,7 +26,10 @@ export default function RegisterPage() {
         body: JSON.stringify({ name, email, password }),
       });
       if (res.ok) {
-        sessionStorage.setItem('token', (await res.json()).token);
+        const data = await res.json();
+        sessionStorage.setItem('token', data.token);
+        sessionStorage.setItem('isAdmin', data.isAdmin);
+      
         console.log(localStorage.getItem('token'));
         toast.success('Account created!');
         router.push('/');

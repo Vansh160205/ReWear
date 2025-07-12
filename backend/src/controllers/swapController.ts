@@ -186,7 +186,7 @@ console.log("Responding to swap ID:", userId, "Decision:", decision);
 
       await prisma.$transaction(updates);
     }
-
+    console.log("Swap updated:", updatedSwap);
     res.json({ message: `Swap ${decision}`, swap: updatedSwap });
   } catch (err) {
     console.error("Error responding to swap:", err);

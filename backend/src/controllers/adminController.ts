@@ -7,6 +7,7 @@ export const getPendingItems = async (_req: Request, res: Response) => {
   try {
     const userId = (_req as any).userId;
     // Check if user is admin
+    console.log("Fetching pending items for user ID:", userId);
     const user = await prisma.user.findUnique({
       where: { id: userId },
       select: { isAdmin: true },
@@ -44,8 +45,8 @@ export const getUsersForAdmin = async (_req: Request, res: Response) => {
 
 // Approve or Reject an item
 export const moderateItem = async (req: Request, res: Response) => {
-  const { id,decision } = req.body; // "approved" or "rejected"
-    console.log("Moderation request for item ID:", id, "Decision:", decision);
+  const { itemId,decision } = req.body; // "approved" or "rejected"
+    console.log("Moderation request for item ID:", itemId, "Decision:", decision);
   if (!["approved", "rejected"].includes(decision)) {
     return res.status(400).json({ error: "Invalid decision" });
   }
@@ -62,12 +63,12 @@ export const moderateItem = async (req: Request, res: Response) => {
     }
     if (decision === "approved") {
       await prisma.item.update({
-        where: { id: Number(id) },
+        where: { id: Number(itemId) },
         data: { approved: true ,status: "available"}, // Set status to available when approved
       });
     } else {
       await prisma.item.delete({
-        where: { id: Number(id) },
+        where: { id: Number(itemId) },
       });
     }
 

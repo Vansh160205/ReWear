@@ -85,6 +85,7 @@ export default function DashboardTabs() {
         credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${sessionStorage.getItem('token')}` 
         },
         body: JSON.stringify({ decision:status }),
       });
