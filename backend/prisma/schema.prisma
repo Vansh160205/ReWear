@@ -1,0 +1,51 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  name      String
+  points    Int      @default(0)
+  items     Item[]   @relation("UserItems")
+  swaps     Swap[]   @relation("UserSwaps")
+  createdAt DateTime @default(now())
+}
+
+model Item {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  category    String
+  size        String
+  condition   String
+  tags        String[]
+  images      String[] // store URLs or file paths
+  ownerId     Int
+  owner       User     @relation("UserItems", fields: [ownerId], references: [id])
+  swaps       Swap[]   @relation("ItemSwaps")
+  available   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+}
+
+model Swap {
+  id          Int      @id @default(autoincrement())
+  itemId      Int
+  item        Item     @relation("ItemSwaps",fields: [itemId], references: [id])
+  requesterId Int
+  requester   User     @relation("UserSwaps", fields: [requesterId], references: [id])
+  status      String   @default("pending") // pending, approved, rejected, completed
+  createdAt   DateTime @default(now())
+}
