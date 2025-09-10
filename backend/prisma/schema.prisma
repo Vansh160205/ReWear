@@ -52,6 +52,7 @@ model Item {
   tags          String[]
   images        String[]
   approved      Boolean  @default(false) // Admin approval required
+  isFeatured    Boolean  @default(false)
   ownerId       Int
   owner         User     @relation("UserItems", fields: [ownerId], references: [id])
   swaps         Swap[]   @relation("ItemSwaps")

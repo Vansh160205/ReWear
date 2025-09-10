@@ -7,13 +7,14 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import Cookies from 'js-cookie';
+import { useAuth } from '@/app/context/authContext';
 export default function RegisterPage() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-
+  const { setUserProfile } = useAuth();
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -26,11 +27,7 @@ export default function RegisterPage() {
         body: JSON.stringify({ name, email, password }),
       });
       if (res.ok) {
-        const data = await res.json();
-        sessionStorage.setItem('token', data.token);
-        sessionStorage.setItem('isAdmin', data.isAdmin);
-      
-        console.log(localStorage.getItem('token'));
+        setUserProfile();
         toast.success('Account created!');
         router.push('/');
       } else {

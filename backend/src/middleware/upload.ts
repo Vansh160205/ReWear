@@ -22,7 +22,7 @@ export const upload = multer({
   storage,
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
   fileFilter: (_req, file, cb) => {
-    const allowed = ["image/jpeg", "image/png", "image/jfif", "image/jpg"];
+    const allowed = ["image/jpeg", "image/png", "image/jfif", "image/jpg","text/csv"];
     cb(null, allowed.includes(file.mimetype));
   },
 });

@@ -5,7 +5,6 @@ import prisma from "../lib/prisma";
 export const createSwap = async (req: Request, res: Response) => {
   const requesterId = (req as any).userId;
   const { itemId, offeredItemId } = req.body;
-
   try {
     const item = await prisma.item.findUnique({ where: { id: Number(itemId) } });
 

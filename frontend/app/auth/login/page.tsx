@@ -6,8 +6,10 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
+import { useAuth } from '@/app/context/authContext';
 
 export default function LoginPage() {
+  const {setUserProfile,user}=useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -27,10 +29,9 @@ export default function LoginPage() {
 
       if (res.ok) {
         const data = await res.json();
-        sessionStorage.setItem('token', data.token);
-        sessionStorage.setItem('isAdmin', data.isAdmin);
-        
+        setUserProfile();
         toast.success('Login successful!');
+        console.log('User:', user);
         router.push('/');
       } else {
         const err = await res.json();
@@ -86,3 +87,4 @@ export default function LoginPage() {
     </main>
   );
 }
+

@@ -1,0 +1,4 @@
+title,description,category,size,condition,tags,images,isRedeemable,pointsCost,ownerId
+Jacket,Black winter bomber jacket,Men,L,Good,winter bomber,/uploads/jacket.jfif /uploads/jacket(2).jfif,true,100,13
+Dress,Red party dress,Woman,S,Excellent,party evening,/uploads/dress.jfif,true,150,13
+Hoodie,Blue zip hoodie,Men,XL,Good,casual winter,/uploads/hoodie.jfif,false,,13

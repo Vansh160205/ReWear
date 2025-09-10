@@ -13,6 +13,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import Link from 'next/link';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 
 interface Item {
   id: number;
@@ -40,20 +41,17 @@ export default function ItemDetailPage() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const token = sessionStorage.getItem('token');
-      if (!token) {
-        toast.error('User token not found');
-        return;
-      }
+      // const token = sessionStorage.getItem('token');
+      // if (!token) {
+      //   toast.error('User token not found');
+      //   return;
+      // }
 
       try {
-        const headers = {
-          Authorization: `Bearer ${token}`,
-        };
-
+        
         const [itemRes, myItemsRes] = await Promise.all([
-          fetch(`http://localhost:8000/api/items/${id}`, { headers }),
-          fetch(`http://localhost:8000/api/items/user`, { headers }),
+          fetch(`http://localhost:8000/api/items/${id}`,{credentials:'include'} ),
+          fetch(`http://localhost:8000/api/items/user`,{credentials:'include'}),
         ]);
 
         const [itemData, myItemsData] = await Promise.all([
@@ -73,20 +71,15 @@ export default function ItemDetailPage() {
   }, [id]);
 
   const handleSwapRequest = async () => {
-    const token = sessionStorage.getItem('token');
-    if (!token) {
-      toast.error('User token not found');
-      return;
-    }
-
+    
     setLoading(true);
     try {
       const res = await fetch('http://localhost:8000/api/swaps', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
+        headers:{
+          'Content-type':'application/json'
         },
+        credentials:'include',
         body: JSON.stringify({
           itemId: Number(id),
           offeredItemId: mode === 'swap' ? Number(offeredItemId) : null,
@@ -130,15 +123,26 @@ export default function ItemDetailPage() {
       </ul>
 
       {item.images.length > 0 && (
-        <div className="grid grid-cols-2 gap-4 mb-6">
-          {item.images.map((url, index) => (
-            <img
-              key={index}
-              src={`http://localhost:8000${url}`}
-              alt={`Item ${index}`}
-              className="rounded-lg shadow-sm"
-            />
-          ))}
+        <div className="mb-6">
+          
+          <Carousel className="w-full max-w-xl mb-6">
+  <CarouselContent>
+    {item.images.map((url, index) => (
+      <CarouselItem key={index} className="flex justify-center">
+        
+        <img
+          src={`http://localhost:8000${url}`}
+          alt={`Image ${index + 1}`}
+          className="h-64 object-contain rounded-xl shadow-md"
+        />
+
+      </CarouselItem>
+    ))}
+  </CarouselContent>
+   <CarouselPrevious />
+  <CarouselNext />
+</Carousel>
+
         </div>
       )}
 

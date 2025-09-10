@@ -58,6 +58,19 @@ export const getItems = async (_req: Request, res: Response) => {
     res.status(500).json({ error: "Failed to fetch items" });
   }
 };
+export const getFeauredItems=async(req:Request,res:Response)=>{
+  try {
+    const items = await prisma.item.findMany({
+      where: {available:true,approved:true,isFeatured:true},
+      take:6,
+      include: { owner: true },
+      });
+      res.json(items);
+    } catch (error) {
+        res.status(500).json({ error: "Failed to fetch featured items" });
+  }
+}
+
 
 export const getItemsOfUser = async (req: Request, res: Response) => {
   const userId = (req as any).userId;
@@ -73,7 +86,6 @@ export const getItemsOfUser = async (req: Request, res: Response) => {
 }
 
 
-// Get single item by ID
 export const getItemById = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
