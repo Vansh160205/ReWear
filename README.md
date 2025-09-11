@@ -68,7 +68,9 @@
 - Remove spam or inappropriate content
 
 ---
-
+# Demo Video 
+(https://drive.google.com/file/d/1M_DGgzwd0xpxxrgiD0TlGHfGnAGAP5PA/view?usp=drive_link)
+---
 ## 🔐 Auth Implementation
 
 - JWT tokens are passed via `Authorization: Bearer <token>` header in all API requests.
