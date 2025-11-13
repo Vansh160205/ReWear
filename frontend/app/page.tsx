@@ -29,7 +29,7 @@ export default function HomePage() {
 
   const fetchFeaturedItems = async () => {
     try {
-      const res = await fetch('http://localhost:8000/api/items/featured',{method:"GET"});
+      const res = await fetch('https://rewear-w7ik.onrender.com/api/items/featured',{method:"GET"});
       const data = await res.json();
       setFeaturedItems(data);
     } catch (err) {
@@ -106,7 +106,7 @@ export default function HomePage() {
                 onClick={() => router.push(`/items/${item.id}`)}
               >
                  <img
-                    src={`http://localhost:8000${item.images[0]}`}
+                    src={`https://rewear-w7ik.onrender.com${item.images[0]}`}
                     alt={item.title}
                     className="w-full h-48 object-cover rounded-lg mb-3"
                   />
