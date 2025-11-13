@@ -44,17 +44,17 @@ export default function DashboardTabs() {
         };
 
         const [res1, res2, res3] = await Promise.all([
-          fetch(`http://localhost:8000/api/items/user`, {
+          fetch(`https://rewear-w7ik.onrender.com/api/items/user`, {
             method: 'GET',
             headers,
             credentials: 'include',
           }),
-          fetch(`http://localhost:8000/api/swaps/incoming`, {
+          fetch(`https://rewear-w7ik.onrender.com/api/swaps/incoming`, {
             method: 'GET',
             headers,
             credentials: 'include',
           }),
-          fetch(`http://localhost:8000/api/swaps/history`, {
+          fetch(`https://rewear-w7ik.onrender.com/api/swaps/history`, {
             method: 'GET',
             headers,
             credentials: 'include',
@@ -80,7 +80,7 @@ export default function DashboardTabs() {
 
   const handleRespond = async (swapId: number, status: 'approved' | 'rejected') => {
     try {
-      const res = await fetch(`http://localhost:8000/api/swaps/respond/${swapId}`, {
+      const res = await fetch(`https://rewear-w7ik.onrender.com/api/swaps/respond/${swapId}`, {
         method: 'POST',
         credentials: 'include',
         headers: {
