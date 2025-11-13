@@ -50,8 +50,8 @@ export default function ItemDetailPage() {
       try {
         
         const [itemRes, myItemsRes] = await Promise.all([
-          fetch(`http://localhost:8000/api/items/${id}`,{credentials:'include'} ),
-          fetch(`http://localhost:8000/api/items/user`,{credentials:'include'}),
+          fetch(`https://rewear-w7ik.onrender.com/api/items/${id}`,{credentials:'include'} ),
+          fetch(`https://rewear-w7ik.onrender.com/api/items/user`,{credentials:'include'}),
         ]);
 
         const [itemData, myItemsData] = await Promise.all([
@@ -74,7 +74,7 @@ export default function ItemDetailPage() {
     
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:8000/api/swaps', {
+      const res = await fetch('https://rewear-w7ik.onrender.com/api/swaps', {
         method: 'POST',
         headers:{
           'Content-type':'application/json'
