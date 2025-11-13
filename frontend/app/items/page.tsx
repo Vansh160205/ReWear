@@ -22,7 +22,7 @@ export default function AllItemsPage() {
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        const res = await fetch('http://localhost:8000/api/items', {
+        const res = await fetch('https://rewear-w7ik.onrender.com/api/items', {
           credentials: 'include',
         });
         const data = await res.json();
