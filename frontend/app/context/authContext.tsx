@@ -23,7 +23,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [token, setToken] = useState<string | null>(null);
 
   const setUserProfile =async() => {
-    const res = await fetch('http://localhost:8000/api/auth/profile', {
+    const res = await fetch('https://rewear-w7ik.onrender.com/api/auth/profile', {
       credentials: 'include',
     });
     const data = await res.json();
