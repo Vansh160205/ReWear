@@ -28,7 +28,7 @@ export default function AdminPanel() {
       const token = sessionStorage.getItem('token');
 
       // Fetch pending items
-      const pendingRes = await fetch('http://localhost:8000/api/admin/pending-items', {
+      const pendingRes = await fetch('https://rewear-w7ik.onrender.com/api/admin/pending-items', {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -38,7 +38,7 @@ export default function AdminPanel() {
       setPendingItems(pending || []);
 
       // Fetch approved (non-featured) items
-      const approvedRes = await fetch('http://localhost:8000/api/admin/getApprovedItems/', {
+      const approvedRes = await fetch('https://rewear-w7ik.onrender.com/api/admin/getApprovedItems/', {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -57,7 +57,7 @@ export default function AdminPanel() {
 
   const handleItemStatusChange = async (itemId: number, decision: 'approved' | 'rejected') => {
   try {
-    const res = await fetch(`http://localhost:8000/api/admin/moderate-item`, {
+    const res = await fetch(`https://rewear-w7ik.onrender.com/api/admin/moderate-item`, {
       method: 'POST',
       credentials: 'include',
       headers: {
@@ -80,7 +80,7 @@ export default function AdminPanel() {
 
 const handleMakeFeatured = async (itemId: number) => {
   try {
-    const res = await fetch(`http://localhost:8000/api/admin/makeFeatured`, {
+    const res = await fetch(`https://rewear-w7ik.onrender.com/api/admin/makeFeatured`, {
       method: 'POST',
       credentials: 'include',
       headers: {
