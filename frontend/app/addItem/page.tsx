@@ -49,7 +49,7 @@ export default function AddItemPage() {
         formData.append('images', file);
       });
 
-      const res = await fetch('http://localhost:8000/api/items', {
+      const res = await fetch('https://rewear-w7ik.onrender.com/api/items', {
         method: 'POST',
         credentials: 'include',
         headers: {
