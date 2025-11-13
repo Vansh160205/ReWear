@@ -19,7 +19,7 @@ const PORT = 8000;
 
 // // Middleware
 app.use(cors({
-  origin: process.env.CLIENT_URL || "http://localhost:3000",
+  origin: process.env.CLIENT_URL || "https://re-wear-emirzw6hb-vansh160205s-projects.vercel.app",
   credentials: true
 }));
 app.use(cookieParser())
